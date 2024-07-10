@@ -82,7 +82,7 @@ class ChatApp:
 
     def send_message(self, message_log):
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",
             messages=message_log,
             temperature=0.1
         )
