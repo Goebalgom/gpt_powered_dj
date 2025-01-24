@@ -1,10 +1,6 @@
-from os import environ
-from dotenv import load_dotenv
 from openai import OpenAI
 
-load_dotenv()
-
-client = OpenAI(api_key=environ.get('OPENAI_API_KEY'))
+client = OpenAI()
 
 def ask_to_gpt_35_turbo(user_input):
     completion = client.chat.completions.create(
