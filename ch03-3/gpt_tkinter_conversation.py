@@ -1,12 +1,6 @@
 import tkinter as tk
-from os import environ
-from dotenv import load_dotenv
-from openai import OpenAI
 from threading import Thread
-
-load_dotenv()
-
-client = OpenAI(api_key=environ.get('OPENAI_API_KEY'))
+from assistant import send_message
 
 class ChatApp:
     def __init__(self, root):
@@ -15,7 +9,7 @@ class ChatApp:
         self.root.geometry("600x450")  # 1. 창의 위아래 길이를 1.5배로 길게
 
         self.message_log = [
-            {"role": "system", "content": "You are a helpful assistant."}
+            {"role": "developer", "content": "You are a helpful assistant."}
         ]
 
         self.output_text = tk.Text(root, height=10, width=50, state=tk.DISABLED)
@@ -56,7 +50,7 @@ class ChatApp:
             thread.start()
 
     def send_message_async(self, user_input, thinking_popup):
-        response = self.send_message(self.message_log)
+        response = send_message(self.message_log)
         self.message_log.append({"role": "assistant", "content": response})
 
         # 팝업 메시지 닫기
@@ -65,21 +59,8 @@ class ChatApp:
         # 응답 표시
         self.output_text.config(state=tk.NORMAL)
         self.output_text.insert(tk.END, f"You: {user_input}\n")
-        self.output_text.insert(tk.END, f"Assistant: {response}\n\n")
+        self.output_text.insert(tk.END, f"AI Assistant: {response}\n\n")
         self.output_text.config(state=tk.DISABLED)
-
-    def send_message(self, message_log):
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=message_log,
-            temperature=0.5
-        )
-
-        for choice in response.choices:
-            if "text" in choice:
-                return choice.text
-
-        return response.choices[0].message.content
 
 if __name__ == "__main__":
     root = tk.Tk()
